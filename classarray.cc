@@ -1,10 +1,13 @@
 #include <iostream>
 #include <string>
-//#include "Person.h"
 using namespace std;
 
+//global variable so we can access by reference
+//use this variable to assess elements that have
+//data in them for sorting
 int numberOfPeople;
 
+//our class object
 class Person {
  public:
  string lastName;
@@ -15,16 +18,92 @@ class Person {
  string email;
 };
 
+//this concatenates so we can use
+// addressBook[i].name() for sorting
 string Person::name() {
  string name = lastName + ", " + firstName;
 
  return name;
 }
 
-void menu(int &);
-void addNewEntry(int &);
+//protoypes since they call each other
+void menu(Person array[], int &);
+void addNewEntry(Person array[], int &);
 
-void menu(int &numberOfPeople) {
+void sortArray(Person persons[], int length) {
+    int i, j;
+    for(i = 0; i < length - 1; i++) {
+        int minValue = i;
+        for(j = i + 1; j < length; j++) {
+            if(persons[j].name() < persons[minValue].name())
+                minValue = j;
+        }
+
+        Person temp;
+        temp = persons[i];
+        persons[i] = persons[minValue];
+        persons[minValue] = temp;
+    }
+}
+
+void testPrint(Person persons[], int numberOfPeople) {
+  //sort before print
+  sortArray(persons, numberOfPeople);
+
+  //test to make sure working
+  for(int i = 0; i < numberOfPeople; i++) {
+    cout << persons[i].name() << endl;
+    cout << persons[i].telephoneNumber << endl;
+    cout << persons[i].streetAddress << endl;
+    cout << persons[i].email << endl;
+    cout << endl;
+    cout << numberOfPeople << endl;
+  }
+}
+
+void printAddressBook(Person persons[], int numberOfPeople) {
+  //sort before print
+  sortArray(persons, numberOfPeople);
+
+  //test to make sure working
+  for(int i = 0; i < numberOfPeople; i++) {
+    cout << persons[i].name() << endl;
+    cout << persons[i].telephoneNumber << endl;
+    cout << persons[i].streetAddress << endl;
+    cout << persons[i].email << endl;
+    cout << endl;
+    cout << numberOfPeople << endl;
+  }
+
+  menu(persons, numberOfPeople);
+}
+
+void hardCodePeople(Person persons[], int &numberOfPeople) {
+  persons[0].lastName = "Sioux";
+  persons[0].firstName = "Siouxsie";
+  persons[0].telephoneNumber = "702-555-5555";
+  persons[0].streetAddress = "3570 S Las Vegas Blvd, Las Vegas, NV 89109";
+  persons[0].email = "siouxsie@sioux.com";
+  numberOfPeople++;
+
+  persons[1].lastName = "Addams";
+  persons[1].firstName = "Morticia";
+  persons[1].telephoneNumber = "415-666-1313";
+  persons[1].streetAddress = "13 Funston Street, San Francisco, CA 94129";
+  persons[1].email = "morticia@addams.com";
+  numberOfPeople++;
+
+  persons[2].lastName = "Bates";
+  persons[2].firstName = "Norman";
+  persons[2].telephoneNumber = "323-555-5555";
+  persons[2].streetAddress = "1070 272nd Street, Aldergrove, BC V4W 2P8, Canada";
+  persons[2].email = "motherknowsbest@bates.com";
+  numberOfPeople++;
+
+  testPrint(persons, numberOfPeople);
+}
+//menu and user choice
+void menu(Person persons[], int &numberOfPeople) {
  int choice;
  do {
    cout << "1. Add New Entry" << endl;
@@ -39,13 +118,13 @@ void menu(int &numberOfPeople) {
  } while (!(choice > 0 && choice < 7));
 
  switch (choice) {
-   case 1 :  addNewEntry(numberOfPeople);
+   case 1 :  addNewEntry(persons, numberOfPeople);
              break;
    case 2 :  // delete an entry
              break;
    case 3 :  // edit an entry
              break;
-   case 4 :  // list all entries
+   case 4 :  printAddressBook(persons, numberOfPeople);
              break;
    case 5 :  // search for an entry
              break;
@@ -53,10 +132,8 @@ void menu(int &numberOfPeople) {
  }
 }
 
-void addNewEntry(int &numberOfPeople) {
-  const int ARRAY_SIZE = 100;
-  Person addressBook[ARRAY_SIZE];
-
+//adding an entry
+void addNewEntry(Person persons[], int &numberOfPeople) {
   int i;
   if (numberOfPeople == 0)
    i = numberOfPeople;
@@ -65,26 +142,28 @@ void addNewEntry(int &numberOfPeople) {
 
  cin.ignore();
  cout << "Enter last name : ";
- getline(cin, addressBook[i].lastName);
+ getline(cin, persons[i].lastName);
 
  cout << "Enter first name: ";
- getline(cin, addressBook[i].firstName);
+ getline(cin, persons[i].firstName);
 
  cout << "Enter telephone number: ";
- getline(cin, addressBook[i].telephoneNumber);
+ getline(cin, persons[i].telephoneNumber);
 
  cout << "Enter street address: ";
- getline(cin, addressBook[i].streetAddress);
+ getline(cin, persons[i].streetAddress);
 
  cout << "Enter email: ";
- getline(cin, addressBook[i].email);
+ getline(cin, persons[i].email);
  cout << endl;
  cout << endl;
 
+ //increment so we know how many elements
+ //are used in array
  numberOfPeople++;
- cout << numberOfPeople << endl;
+ cout << numberOfPeople << endl; //test to make sure increment
 
- menu(numberOfPeople);
+ menu(persons, numberOfPeople);
 }
 
 int main() {
@@ -92,34 +171,11 @@ int main() {
   int numberOfPeople = 0;
   Person addressBook[ARRAY_SIZE];
 
-  addressBook[0].lastName = "Addams";
-  addressBook[0].firstName = "Morticia";
-  addressBook[0].telephoneNumber = "415-666-1313";
-  addressBook[0].streetAddress = "13 Funston Street, San Francisco, CA 94129";
-  addressBook[0].email = "morticia@addams.com";
-  numberOfPeople++;
-  cout << addressBook[0].name() << endl;
-  cout << addressBook[0].telephoneNumber << endl;
-  cout << addressBook[0].streetAddress << endl;
-  cout << addressBook[0].email << endl;
-  cout << endl;
-  cout << numberOfPeople << endl;
+  //hard code people in address book 
+  hardCodePeople(addressBook, numberOfPeople);
 
-  addressBook[1].lastName = "Bates";
-  addressBook[1].firstName = "Norman";
-  addressBook[1].telephoneNumber = "323-555-5555";
-  addressBook[1].streetAddress = "1070 272nd Street, Aldergrove, BC V4W 2P8, Canada";
-  addressBook[1].email = "motherknowsbest@bates.com";
-  numberOfPeople++;
-  cout << addressBook[1].name() << endl;
-  cout << addressBook[1].telephoneNumber << endl;
-  cout << addressBook[1].streetAddress << endl;
-  cout << addressBook[1].email << endl;
-  cout << endl;
-  cout << numberOfPeople << endl;
-
-
-  menu(numberOfPeople);
+  //call menu
+  menu(addressBook, numberOfPeople);
 
   return 0;
 }
