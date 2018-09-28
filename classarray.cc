@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -29,6 +30,7 @@ string Person::name() {
 //protoypes since they call each other
 void menu(Person array[], int &);
 void addNewEntry(Person array[], int &);
+void search(Person array[], int);
 
 void sortArray(Person persons[], int length) {
     int i, j;
@@ -52,12 +54,12 @@ void testPrint(Person persons[], int numberOfPeople) {
 
   //test to make sure working
   for(int i = 0; i < numberOfPeople; i++) {
-    cout << persons[i].name() << endl;
-    cout << persons[i].telephoneNumber << endl;
-    cout << persons[i].streetAddress << endl;
-    cout << persons[i].email << endl;
+    cout << i + 1 << '\t';
+    cout << '\t' << persons[i].name() << endl;
+    cout << '\t' << persons[i].telephoneNumber << endl;
+    cout << '\t' << persons[i].streetAddress << endl;
+    cout << '\t' << persons[i].email << endl;
     cout << endl;
-    cout << numberOfPeople << endl;
   }
 }
 
@@ -67,12 +69,12 @@ void printAddressBook(Person persons[], int numberOfPeople) {
 
   //test to make sure working
   for(int i = 0; i < numberOfPeople; i++) {
+    cout << i + 1 << '.' << endl;
     cout << persons[i].name() << endl;
     cout << persons[i].telephoneNumber << endl;
     cout << persons[i].streetAddress << endl;
     cout << persons[i].email << endl;
     cout << endl;
-    cout << numberOfPeople << endl;
   }
 
   menu(persons, numberOfPeople);
@@ -102,6 +104,62 @@ void hardCodePeople(Person persons[], int &numberOfPeople) {
 
   testPrint(persons, numberOfPeople);
 }
+
+void searchName(Person persons[], int numberOfPeople) {
+    string userSearch;
+
+    cout << "Search Last Name: ";
+    getline(cin, userSearch);
+
+    cout << endl;
+
+    for(int i = 0; i < numberOfPeople - 1; i++) {
+      if(persons[i].lastName == userSearch) {
+        cout << "I AM IN!!!" << endl;
+        cout << i + 1 << '.' << endl;
+        cout << persons[i].name() << endl;
+        cout << persons[i].telephoneNumber << endl;
+        cout << persons[i].streetAddress << endl;
+        cout << persons[i].email << endl;
+        cout << endl;
+      }
+    }
+    cin.ignore();
+    //menu(persons, numberOfPeople);
+}
+
+//adding an entry
+void addNewEntry(Person persons[], int &numberOfPeople) {
+  int i = numberOfPeople;
+
+  cin.ignore();
+  cout << "Enter last name : ";
+  getline(cin, persons[i].lastName, '\n');
+
+  cout << "Enter first name: ";
+  getline(cin, persons[i].firstName, '\n');
+
+  cout << "Enter telephone number: ";
+  getline(cin, persons[i].telephoneNumber, '\n');
+
+  cout << "Enter street address: ";
+  getline(cin, persons[i].streetAddress, '\n');
+
+  cout << "Enter email: ";
+  getline(cin, persons[i].email, '\n');
+
+  cout << endl;
+  cout << endl;
+
+  //increment so we know how many elements
+  //are used in array
+  numberOfPeople++;
+  cout << numberOfPeople << endl; //test to make sure increment
+
+  printAddressBook(persons, numberOfPeople);
+  menu(persons, numberOfPeople);
+}
+
 //menu and user choice
 void menu(Person persons[], int &numberOfPeople) {
  int choice;
@@ -126,52 +184,19 @@ void menu(Person persons[], int &numberOfPeople) {
              break;
    case 4 :  printAddressBook(persons, numberOfPeople);
              break;
-   case 5 :  // search for an entry
+   case 5 :  searchName(persons, numberOfPeople);
              break;
    case 6 :  exit(0);
  }
 }
 
-//adding an entry
-void addNewEntry(Person persons[], int &numberOfPeople) {
-  int i;
-  if (numberOfPeople == 0)
-   i = numberOfPeople;
- else
-   i = numberOfPeople + 1;
-
- cin.ignore();
- cout << "Enter last name : ";
- getline(cin, persons[i].lastName);
-
- cout << "Enter first name: ";
- getline(cin, persons[i].firstName);
-
- cout << "Enter telephone number: ";
- getline(cin, persons[i].telephoneNumber);
-
- cout << "Enter street address: ";
- getline(cin, persons[i].streetAddress);
-
- cout << "Enter email: ";
- getline(cin, persons[i].email);
- cout << endl;
- cout << endl;
-
- //increment so we know how many elements
- //are used in array
- numberOfPeople++;
- cout << numberOfPeople << endl; //test to make sure increment
-
- menu(persons, numberOfPeople);
-}
 
 int main() {
   const int ARRAY_SIZE = 100;
   int numberOfPeople = 0;
   Person addressBook[ARRAY_SIZE];
 
-  //hard code people in address book 
+  //hard code people in address book
   hardCodePeople(addressBook, numberOfPeople);
 
   //call menu
