@@ -48,32 +48,17 @@ void sortArray(Person persons[], int length) {
     }
 }
 
-void testPrint(Person persons[], int numberOfPeople) {
-  //sort before print
-  sortArray(persons, numberOfPeople);
-
-  //test to make sure working
-  for(int i = 0; i < numberOfPeople; i++) {
-    cout << i + 1 << '\t';
-    cout << '\t' << persons[i].name() << endl;
-    cout << '\t' << persons[i].telephoneNumber << endl;
-    cout << '\t' << persons[i].streetAddress << endl;
-    cout << '\t' << persons[i].email << endl;
-    cout << endl;
-  }
-}
-
 void printAddressBook(Person persons[], int numberOfPeople) {
   //sort before print
   sortArray(persons, numberOfPeople);
 
   //test to make sure working
   for(int i = 0; i < numberOfPeople; i++) {
-    cout << i + 1 << '.' << endl;
+    cout << setw(5) << left << i + 1;
     cout << persons[i].name() << endl;
-    cout << persons[i].telephoneNumber << endl;
-    cout << persons[i].streetAddress << endl;
-    cout << persons[i].email << endl;
+    cout << setw(5) << " " << persons[i].telephoneNumber << endl;
+    cout << setw(5) << " " << persons[i].streetAddress << endl;
+    cout << setw(5) << " " << persons[i].email << endl;
     cout << endl;
   }
 
@@ -101,31 +86,58 @@ void hardCodePeople(Person persons[], int &numberOfPeople) {
   persons[2].streetAddress = "1070 272nd Street, Aldergrove, BC V4W 2P8, Canada";
   persons[2].email = "motherknowsbest@bates.com";
   numberOfPeople++;
-
-  testPrint(persons, numberOfPeople);
 }
 
-void searchName(Person persons[], int numberOfPeople) {
-    string userSearch;
+//Searching the address book
+void search(Person persons[], int numberOfPeople) {
+	int userSearch;
+	//persons[numberOfPeople];
+	string fname;
+	string lname;
 
-    cout << "Search Last Name: ";
-    getline(cin, userSearch);
+	cout << endl;
+	cout << "1. Search First Name" << endl;
+	cout << "2. Search Last Name" << endl;
+	cout << "Enter your choice (1-2): ";
+	cin >> userSearch;
 
-    cout << endl;
+	switch (userSearch) {
+	case 1:
+		cout << "First Name: ";
+		cin >> fname;
+		cout << endl;
 
-    for(int i = 0; i < numberOfPeople - 1; i++) {
-      if(persons[i].lastName == userSearch) {
-        cout << "I AM IN!!!" << endl;
-        cout << i + 1 << '.' << endl;
-        cout << persons[i].name() << endl;
-        cout << persons[i].telephoneNumber << endl;
-        cout << persons[i].streetAddress << endl;
-        cout << persons[i].email << endl;
-        cout << endl;
-      }
-    }
-    cin.ignore();
-    //menu(persons, numberOfPeople);
+		for (int i = 0; i < numberOfPeople; i++) {
+			if (fname.compare(persons[i].firstName) == 0) {
+				cout << persons[i].name() << endl;
+				cout << persons[i].telephoneNumber << endl;
+				cout << persons[i].streetAddress << endl;
+				cout << persons[i].email << endl;
+			}
+		}
+		cout << endl;
+		cin.ignore();
+		break;
+	case 2:
+		cout << "Last Name: ";
+		cin >> lname;
+
+		for (int i = 0; i < numberOfPeople; i++) {
+			if (lname.compare(persons[i].lastName) == 0) {
+				cout << persons[i].name() << endl;
+				cout << persons[i].telephoneNumber << endl;
+				cout << persons[i].streetAddress << endl;
+				cout << persons[i].email << endl;
+			}
+		}
+		cout << endl;
+		cin.ignore();
+		break;
+	default:
+		cout << "Not a valid option" << endl;
+		break;
+	}
+	menu(persons, numberOfPeople);
 }
 
 //adding an entry
@@ -184,7 +196,7 @@ void menu(Person persons[], int &numberOfPeople) {
              break;
    case 4 :  printAddressBook(persons, numberOfPeople);
              break;
-   case 5 :  searchName(persons, numberOfPeople);
+   case 5 :  search(persons, numberOfPeople);
              break;
    case 6 :  exit(0);
  }
