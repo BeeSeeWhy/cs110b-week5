@@ -1,6 +1,8 @@
-#include <iomanip>
 #include <iostream>
+#include <iomanip>
 #include <string>
+#include <cstdlib>
+#include <stdlib.h>
 using namespace std;
 
 //global variable so we can access by reference
@@ -10,27 +12,27 @@ int numberOfPeople;
 
 //our class object
 class Person {
- public:
- string lastName;
- string firstName;
- string name();
- string telephoneNumber;
- string streetAddress;
- string email;
+public:
+	string lastName;
+	string firstName;
+	string name();
+	string telephoneNumber;
+	string streetAddress;
+	string email;
 };
 
 //this concatenates so we can use
 // addressBook[i].name() for sorting
 string Person::name() {
- string name = lastName + ", " + firstName;
+	string name = firstName + " " + lastName;
 
- return name;
+	return name;
 }
 
 //protoypes since they call each other
 void addNewEntry(Person array[], int &);
-void deleteEntry(Person array[], int);
-void editEntry(Person array[], int);
+void deleteEntry(Person array[], int &);
+void editEntry(Person array[], int &);
 void hardCodePeople(Person array[], int &);
 void menu(Person array[], int &);
 void printAddressBook(Person array[], int);
@@ -38,18 +40,25 @@ void search(Person array[], int);
 void sortArray(Person array[], int);
 
 int main() {
-  const int ARRAY_SIZE = 100;
-  int numberOfPeople = 0;
-  Person addressBook[ARRAY_SIZE];
+	const int ARRAY_SIZE = 100;
+	int numberOfPeople = 0;
+	Person addressBook[ARRAY_SIZE];
+	string goBack;
+	bool open = true;
 
-  //hard code people in address book
-  hardCodePeople(addressBook, numberOfPeople);
+	//hard code people in address book
+	hardCodePeople(addressBook, numberOfPeople);
 
-  //call menu
-  menu(addressBook, numberOfPeople);
 
-  return 0;
+	//call menu
+	menu(addressBook, numberOfPeople);
+
+
+
+	return 0;
 }
+
+
 
 //adding an entry
 void addNewEntry(Person persons[], int &numberOfPeople) {
@@ -83,7 +92,7 @@ void addNewEntry(Person persons[], int &numberOfPeople) {
 }
 
 // Search and delete an entry
-void deleteEntry(Person persons[], int numberOfPeople) {
+void deleteEntry(Person persons[], int &numberOfPeople) {
   const int ARRAY_SIZE = 100;
   Person addressBook[ARRAY_SIZE];
   int userSearch;
@@ -91,12 +100,11 @@ void deleteEntry(Person persons[], int numberOfPeople) {
 
   string fname;
   string lname;
-  cout << "Search for the contact you want to delete" << endl;
-  cout << "Search First Name: Enter 1 " << endl;
-  cout << "Search Last Name: Enter 2 " << endl;
-  cout << "Enter your choice: ";
-  cin >> userSearch;
   cout << endl;
+	cout << "1. Search First Name" << endl;
+	cout << "2. Search Last Name" << endl;
+	cout << "Enter your choice (1-2): ";
+	cin >> userSearch;
 
   switch (userSearch) {
     case 1: cout << "First Name: ";
@@ -113,6 +121,7 @@ void deleteEntry(Person persons[], int numberOfPeople) {
                   Person* persons[i];
                   delete persons[i];
 
+                  numberOfPeople--;
                   cout << "The entry has been deleted " << endl;
                   cout << endl;
                 }
@@ -136,6 +145,7 @@ void deleteEntry(Person persons[], int numberOfPeople) {
                   Person* persons[i];
                   delete persons[i];
 
+                  numberOfPeople--;
                   cout << "The entry has been deleted " << endl;
                   cout << endl;
                 }
@@ -143,14 +153,13 @@ void deleteEntry(Person persons[], int numberOfPeople) {
               else
                 cout << "Start over from the main menu" << endl;
             }
-            cin.ignore();
             break;
 
      }
 }
 
 // Search and edit an entry
-void editEntry(Person persons[], int numberOfPeople) {
+void editEntry(Person persons[], int &numberOfPeople) {
 
   const int ARRAY_SIZE = 100;
   Person addressBook[ARRAY_SIZE];
@@ -160,12 +169,11 @@ void editEntry(Person persons[], int numberOfPeople) {
   string fname;
   string lname;
 
-  cout << "Search for the contact you want to edit: " << endl;
-  cout << "Search First Name: Enter 1 " << endl;
-  cout << "Search Last Name: Enter 2 " << endl;
-  cout << "Enter your choice: " << endl;
-  cin >> userSearch;
   cout << endl;
+	cout << "1. Search First Name" << endl;
+	cout << "2. Search Last Name" << endl;
+	cout << "Enter your choice (1-2): ";
+	cin >> userSearch;
 
   switch (userSearch) {
     case 1 :  cout << "First Name: ";
@@ -312,6 +320,7 @@ void search(Person persons[], int numberOfPeople) {
 	string fname;
 	string lname;
 	char deleteChoice;
+	Person newAddressBook[100];
 
 	cout << endl;
 	cout << "1. Search First Name" << endl;
@@ -370,7 +379,18 @@ void search(Person persons[], int numberOfPeople) {
 					cin >> deleteChoice;
 					if (deleteChoice == 'Y' || 'y') {
 						cin.ignore();
-						delete persons[i];
+
+						for (int j = i; j < (numberOfPeople - i); j++) {
+							persons[j] = persons[j + 1];
+						}
+
+						persons[numberOfPeople].firstName = "";
+						persons[numberOfPeople].lastName = "";
+						persons[numberOfPeople].telephoneNumber = "";
+						persons[numberOfPeople].streetAddress = "";
+						persons[numberOfPeople].email = "";
+
+						numberOfPeople -= 1;
 
 						cout << "The entry has been deleted " << endl;
 						cout << endl;
@@ -439,8 +459,20 @@ void search(Person persons[], int numberOfPeople) {
 						cin >> deleteChoice;
 						if (deleteChoice == 'Y' || 'y') {
 							cin.ignore();
-							delete persons[i];
 
+
+							for (int j = i; j < (numberOfPeople - i); j++)
+							{
+								persons[j] = persons[j+1];
+							}
+
+							persons[numberOfPeople].firstName = "";
+							persons[numberOfPeople].lastName = "";
+							persons[numberOfPeople].telephoneNumber = "";
+							persons[numberOfPeople].streetAddress = "";
+							persons[numberOfPeople].email = "";
+
+							numberOfPeople -= 1;
 							cout << "The entry has been deleted " << endl;
 							cout << endl;
 						}
@@ -468,18 +500,18 @@ void search(Person persons[], int numberOfPeople) {
 	menu(persons, numberOfPeople);
 }
 
+//sorting address book alphabetically
 void sortArray(Person persons[], int length) {
-    int i, j;
-    for(i = 0; i < length - 1; i++) {
-        int minValue = i;
-        for(j = i + 1; j < length; j++) {
-            if(persons[j].name() < persons[minValue].name())
-                minValue = j;
-        }
-
-        Person temp;
-        temp = persons[i];
-        persons[i] = persons[minValue];
-        persons[minValue] = temp;
-    }
+	int i, j;
+	for (i = 0; i < length - 1; i++) {
+		int minValue = i;
+		for (j = i + 1; j < length; j++) {
+			if (persons[j].name() < persons[minValue].name())
+				minValue = j;
+		}
+		Person temp;
+		temp = persons[i];
+		persons[i] = persons[minValue];
+		persons[minValue] = temp;
+	}
 }
